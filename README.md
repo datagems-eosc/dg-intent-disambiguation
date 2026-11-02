@@ -19,8 +19,9 @@ The service only classifies. It does not call other DataGEMS components; the Gat
 API runs the chosen flow. It is separate from the Gateway's existing
 `/api/search/disambiguate-query`, which rewrites unclear terms inside a query.
 
-See [docs/integration.md](docs/integration.md) for the API contract and how the Gateway
-and the UI are expected to use it.
+**Documentation:** <https://datagems-eosc.github.io/dg-intent-disambiguation/> (sources in
+[docs/](docs/)). The [Integration Guide](docs/docs/integration.md) has the API contract
+and how the Gateway and the UI are expected to use it.
 
 ## How it works
 
@@ -127,6 +128,32 @@ Logs are structured (structlog). Each request carries the Gateway's
    `ghcr.io/datagems-eosc/dg-intent-disambiguation:vX.Y.Z`.
 3. Update the image tag in `dg-intent-disambiguation-deployments` and run its deploy
    script.
+4. Run the **Deploy Docs (On-Demand)** workflow with the version, e.g. `0.1.0`. It
+   publishes the site to GitHub Pages with `mike` and points `latest` at it.
+
+## Documentation
+
+The docs site is built with MkDocs Material, like the other DataGEMS services.
+
+```bash
+make docs           # serve locally at http://127.0.0.1:8000
+make docs-test      # strict build, fails on broken links or warnings
+make docs-openapi   # refresh docs/docs/content/openapi.json after changing the API
+```
+
+`tests/test_openapi_doc.py` fails when the published OpenAPI document no longer matches
+the code.
+
+## GitHub Actions
+
+| Workflow | Trigger | |
+|---|---|---|
+| Tests | push to `main`, pull requests | lint and unit tests |
+| Build and Push Intent Disambiguation Image | `v*` tag | publishes the Docker image |
+| Deploy Docs (On-Demand) | manual, with a version | publishes the docs site |
+| CodeQL Scan (On-Demand) | manual | static analysis of Python and workflow files |
+| Vulnerability Scan (On-Demand) | manual, with an image tag | Trivy scan of the Dockerfile and image |
+| Code Metrics (On-Demand) | manual | radon maintainability, complexity and size report |
 
 ## Layout
 
@@ -139,6 +166,8 @@ intent_disambiguation/
   schemas.py       request and response models
   prompts/         versioned prompts
   routes/          intent and health endpoints
-eval/              labelled inputs and the evaluation script
+eval/              labelled inputs, the benchmark and the evaluation script
+docs/              documentation site (MkDocs)
+scripts/           OpenAPI export for the docs
 tests/             unit tests; test_live.py needs the VPN
 ```

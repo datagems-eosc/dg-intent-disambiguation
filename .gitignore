@@ -21,3 +21,6 @@ htmlcov/
 # Editors
 .idea/
 .vscode/
+
+# Built documentation site
+site/

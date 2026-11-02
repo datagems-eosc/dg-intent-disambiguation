@@ -34,6 +34,18 @@ benchmark: ## Measure accuracy on the full benchmark, eval/benchmark/benchmark.j
 run: ## Run the service locally on port 8000 with auto reload (.env)
 	@uv run --env-file .env uvicorn intent_disambiguation.main:app --reload --port 8000
 
+.PHONY: docs-openapi
+docs-openapi: ## Export the OpenAPI document shown on the docs site
+	@uv run python scripts/export_openapi.py
+
+.PHONY: docs-test
+docs-test: ## Test if documentation can be built without warnings or errors
+	@uv run mkdocs build -s -f docs/mkdocs.yml -d ../site
+
+.PHONY: docs
+docs: ## Build and serve the documentation
+	@uv run mkdocs serve -f docs/mkdocs.yml
+
 .PHONY: docker-build
 docker-build: ## Build the container image
 	@docker build -t $(IMAGE) .

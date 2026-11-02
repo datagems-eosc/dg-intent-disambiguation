@@ -6,6 +6,8 @@ repos:
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml
+        # docs/mkdocs.yml uses a !!python/name tag for the mermaid fence
+        args: [--unsafe]
       - id: end-of-file-fixer
       - id: trailing-whitespace
   # ruff runs from the locked dev dependencies, the same version as CI

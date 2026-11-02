@@ -3,6 +3,9 @@
 For the Gateway API and the UI. The service answers one question about what a user
 typed into the home-page search box: do they want **datasets** or an **answer**?
 
+The full endpoint reference is in the [API Overview](api-overview.md); this page covers
+how to use the answer.
+
 ## Endpoint
 
 ```
@@ -76,7 +79,7 @@ Swagger: `https://datagems-dev.scayle.es/dg-intent-disambiguation/swagger`
 | 422 | Invalid body (blank or overlong query, malformed `dataset_ids`) |
 | 503 | The AAI keys could not be fetched to check the token |
 
-Latency is about 1.1 s typical and 1.3 s at p95. Set a client timeout of about 30 s:
+Latency is about 1.4 s typical and 1.7 s at the 95th percentile. Set a client timeout of about 30 s:
 the service's own call to SCAYLE times out after 20 s.
 
 ## Suggested routing
