@@ -21,7 +21,7 @@ httpx all go through the same formatter and are written to standard output.
 |---|---|
 | DEBUG | Detailed information, including the user's input and the generated search query |
 | INFO | One line per handled request and per classification |
-| WARNING | Degraded answers, rejected tokens, disallowed clients |
+| WARNING | Degraded answers, rejected tokens, callers without a required role |
 | ERROR | The AAI signing keys could not be fetched |
 
 The default level is `INFO`, set with `LOG_LEVEL`. httpx request lines are kept at
@@ -48,7 +48,7 @@ the Gateway API's log tracking so that the two can be joined:
 | `Intent input` | DEBUG | `query`, `search_query` |
 | `Intent model unavailable, falling back to ambiguous` | WARNING | `error`, `latency_ms` |
 | `Token rejected` | WARNING | `reason`, `status` |
-| `Client not allowed` | WARNING | `client_id` |
+| `Caller missing a required role` | WARNING | `required_roles`, `user_roles`, `UserId`, `ClientId` |
 | `Cannot fetch the identity provider keys` | ERROR | `error` |
 | `Health check completed` | INFO | `report` |
 

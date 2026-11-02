@@ -14,10 +14,6 @@ def _env_bool(name: str, default: bool) -> bool:
     return value.lower() in ("1", "true", "yes", "on")
 
 
-def _env_csv(name: str) -> frozenset[str]:
-    return frozenset(item.strip() for item in _env(name).split(",") if item.strip())
-
-
 @dataclass(frozen=True)
 class Settings:
     base_url: str
@@ -39,7 +35,6 @@ class Settings:
     enable_auth: bool
     oidc_issuer: str
     oidc_audience: str | None
-    allowed_clients: frozenset[str]
     oidc_verify_ssl: bool
 
     @classmethod
@@ -60,8 +55,9 @@ class Settings:
             prompt_version=_env("PROMPT_VERSION", "v2"),
             enable_auth=_env_bool("ENABLE_AUTH", False),
             oidc_issuer=_env("OIDC_ISSUER", "https://datagems-dev.scayle.es/oauth/realms/dev"),
-            oidc_audience=_env("OIDC_AUDIENCE") or None,
-            allowed_clients=_env_csv("ALLOWED_CLIENTS"),
+            # Set to an empty string to skip the audience check
+            oidc_audience=os.environ.get("OIDC_AUDIENCE", "dg-intent-disambiguation").strip()
+            or None,
             oidc_verify_ssl=_env_bool("OIDC_VERIFY_SSL", True),
         )
 

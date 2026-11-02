@@ -69,10 +69,12 @@ benchmark, and switch with `PROMPT_VERSION`. See
 [Intent Classification](intent-classification.md#changing-the-prompt) and
 [Evaluation](evaluation.md).
 
-### Tightening Authentication
+### Calls Rejected with 401 or 403
 
-Once the Gateway's client id has been confirmed in the logs (`ClientId`), set
-`ALLOWED_CLIENTS` to it. See [Configuration](configuration.md#authentication).
+A `Token rejected` warning with status 401 usually means the token does not carry the
+`dg-intent-disambiguation` audience (an AAI configuration issue) or has expired. A
+`Caller missing a required role` warning (403) lists the roles the token had. See
+[Security](security.md#authentication).
 
 ## Releases
 

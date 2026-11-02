@@ -73,7 +73,7 @@ Swagger: `https://datagems-dev.scayle.es/dg-intent-disambiguation/swagger`
 |---|---|
 | 200 | Always when the request is valid, including when the model is down (`degraded: true`) |
 | 401 | Missing, expired or invalid token |
-| 403 | The calling client is not on the allow list |
+| 403 | The token has no `user`, `dg_user` or privileged realm role |
 | 422 | Invalid body (blank or overlong query, malformed `dataset_ids`) |
 | 503 | The AAI keys could not be fetched to check the token |
 
@@ -113,7 +113,8 @@ Following the existing `service-*.json` files:
 }
 ```
 
-The service validates the token's signature, issuer and expiry. It does not yet
-require a specific audience or client. Once the Gateway's first calls show its client
-id in the logs, `ALLOWED_CLIENTS` will be set to it (expected `dg-app-api`). Tell us if
-the exchanged token for this scope should carry a specific `aud` value.
+The service validates tokens the way cross-dataset discovery does: signature, issuer,
+expiry, the audience `dg-intent-disambiguation` (cross-dataset discovery requires
+`cross-dataset-discovery-api`), and the realm role `user` or `dg_user` (or `dg_admin`,
+`dg_system`, `dg_dataset-curator`). The exchanged token the Gateway sends must therefore
+carry the `dg-intent-disambiguation` audience, which the AAI adds.

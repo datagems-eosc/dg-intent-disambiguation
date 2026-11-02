@@ -12,6 +12,7 @@ from intent_disambiguation.main import create_app
 from .conftest import FakeLLM, make_settings
 
 ISSUER = "https://idp.test/oauth/realms/dev"
+AUDIENCE = "dg-intent-disambiguation"
 PRIVATE_KEY = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 
 
@@ -27,13 +28,25 @@ class FakeJWKS:
 
 def make_token(**claims) -> str:
     now = int(time.time())
-    payload = {"iss": ISSUER, "sub": "user-1", "azp": "dg-app-api", "iat": now, "exp": now + 300}
+    payload = {
+        "iss": ISSUER,
+        "aud": ["account", AUDIENCE],
+        "sub": "user-1",
+        "azp": "dg-app-api",
+        "realm_access": {"roles": ["dg_user", "offline_access"]},
+        "iat": now,
+        "exp": now + 300,
+    }
     payload.update(claims)
     return jwt.encode(payload, PRIVATE_KEY, algorithm="RS256", headers={"kid": "k1"})
 
 
-def make_client(jwks: FakeJWKS | None = None, **verifier_kwargs) -> TestClient:
-    verifier = TokenVerifier(ISSUER, jwks_client=jwks or FakeJWKS(), **verifier_kwargs)
+def make_client(
+    jwks: FakeJWKS | None = None, audience: str | None = AUDIENCE, **verifier_kwargs
+) -> TestClient:
+    verifier = TokenVerifier(
+        ISSUER, audience=audience, jwks_client=jwks or FakeJWKS(), **verifier_kwargs
+    )
     app = create_app(
         settings=make_settings(enable_auth=True, oidc_issuer=ISSUER),
         llm=FakeLLM(),
@@ -79,18 +92,31 @@ def test_garbage_token_is_rejected():
     assert call(client, "not-a-jwt").status_code == 401
 
 
-def test_client_allow_list():
-    client = make_client(allowed_clients=frozenset({"dg-app-api"}))
+@pytest.mark.parametrize("role", ["user", "dg_user", "dg_admin", "dg_system", "dg_dataset-curator"])
+def test_user_and_privileged_roles_are_accepted(role):
+    token = make_token(realm_access={"roles": [role]})
 
-    assert call(client, make_token(azp="dg-app-api")).status_code == 200
-    assert call(client, make_token(azp="someone-else")).status_code == 403
+    assert call(make_client(), token).status_code == 200
 
 
-def test_audience_is_checked_when_configured():
-    client = make_client(audience="dg-intent-disambiguation")
+@pytest.mark.parametrize(
+    "claims",
+    [{"realm_access": {"roles": ["offline_access"]}}, {"realm_access": {}}],
+    ids=["other-roles", "no-roles"],
+)
+def test_token_without_a_required_role_is_forbidden(claims):
+    assert call(make_client(), make_token(**claims)).status_code == 403
 
-    assert call(client, make_token(aud="dg-intent-disambiguation")).status_code == 200
-    assert call(client, make_token(aud="account")).status_code == 401
+
+def test_token_for_another_audience_is_rejected():
+    assert call(make_client(), make_token(aud="cross-dataset-discovery-api")).status_code == 401
+    assert call(make_client(), make_token(aud=None)).status_code == 401
+
+
+def test_audience_check_can_be_disabled():
+    client = make_client(audience=None)
+
+    assert call(client, make_token(aud="account")).status_code == 200
 
 
 def test_unreachable_identity_provider_returns_503():

@@ -46,16 +46,16 @@ ConfigMap, and the credentials from a Vault-backed Secret (see
 |---|---|---|
 | `ENABLE_AUTH` | `false` | Require a DataGEMS AAI bearer token on the intent endpoint. `true` in every deployment. |
 | `OIDC_ISSUER` | `https://datagems-dev.scayle.es/oauth/realms/dev` | Expected token issuer. Signing keys are fetched from `{OIDC_ISSUER}/protocol/openid-connect/certs`. |
-| `OIDC_AUDIENCE` | empty | When set, the token's `aud` must contain this value. |
-| `ALLOWED_CLIENTS` | empty | Comma-separated client ids (`azp`) allowed to call the service. Empty allows any client with a valid token. |
+| `OIDC_AUDIENCE` | `dg-intent-disambiguation` | The token's `aud` must contain this value. Set it to an empty value to skip the check. |
 | `OIDC_VERIFY_SSL` | `true` | Verify the certificate of the AAI when fetching keys. |
 
 ## Authentication
 
-With `ENABLE_AUTH=true` the service accepts tokens issued by the realm in `OIDC_ISSUER`.
-The Gateway API calls it with an exchanged token, whose `azp` claim names the Gateway's
-client. Once the Gateway's client id has been confirmed in the logs (it is logged as
-`ClientId`), set `ALLOWED_CLIENTS` to it so that only the Gateway can call the service.
+With `ENABLE_AUTH=true` the service accepts tokens issued by the realm in `OIDC_ISSUER`
+that carry the `OIDC_AUDIENCE` audience and one of the realm roles `user` or `dg_user`, or one of the privileged roles `dg_admin`, `dg_system`, `dg_dataset-curator`. This follows
+cross-dataset discovery, which requires the `cross-dataset-discovery-api` audience and the
+same roles. The AAI must therefore add the `dg-intent-disambiguation` audience to the
+tokens the Gateway exchanges for this service.
 
 See [Security](security.md#authentication) for the full list of checks and the resulting
 status codes.
@@ -75,6 +75,5 @@ INTENT_MAX_TOKENS=1024
 INTENT_MIN_CONFIDENCE=0.6
 ENABLE_AUTH=true
 OIDC_ISSUER=https://datagems-dev.scayle.es/oauth/realms/dev
-OIDC_AUDIENCE=
-ALLOWED_CLIENTS=
+OIDC_AUDIENCE=dg-intent-disambiguation
 ```

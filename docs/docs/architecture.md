@@ -37,7 +37,7 @@ FastAPI as `422` responses.
 ### Authentication
 
 `auth.py` validates DataGEMS AAI (Keycloak) bearer tokens: signature against the realm's
-published keys, issuer, expiry, and optionally audience and calling client. It is switched
+published keys, issuer, expiry, audience and realm role, like cross-dataset discovery. It is switched
 on with `ENABLE_AUTH`. See [Security](security.md).
 
 ### Classifier

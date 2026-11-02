@@ -22,17 +22,18 @@ The token is accepted only if all of these checks pass:
 | Signature | Verified against the realm's published keys (`{OIDC_ISSUER}/protocol/openid-connect/certs`), cached for one hour. Only asymmetric algorithms are accepted (RS256, RS384, RS512, PS256, ES256); a token signed with a shared secret is rejected. |
 | Issuer | `iss` must equal `OIDC_ISSUER`. |
 | Expiry | `exp` is required and checked, with 30 seconds of leeway. |
-| Audience | `aud` must contain `OIDC_AUDIENCE`, when that setting is not empty. |
-| Calling client | `azp` (or `client_id`) must be in `ALLOWED_CLIENTS`, when that setting is not empty. |
+| Audience | `aud` must contain `OIDC_AUDIENCE` (default `dg-intent-disambiguation`). An empty value skips this check. |
+| Role | The token's realm roles (`realm_access.roles`) must include `user` or `dg_user`, or one of the privileged roles `dg_admin`, `dg_system`, `dg_dataset-curator`. |
 
-The Gateway API calls the service with the token-exchange flow, as it does for other
-DataGEMS services, so the token represents the original user and the Gateway as the
-calling client.
+These are the same checks cross-dataset discovery applies, with this service's own
+audience in place of `cross-dataset-discovery-api`. The Gateway API calls the service with
+the token-exchange flow, as it does for other DataGEMS services, so the token represents
+the original user; the AAI adds the `dg-intent-disambiguation` audience to it.
 
 | Outcome | Status |
 |---|---|
 | Missing token, bad signature, wrong issuer or audience, expired | `401 Unauthorized` |
-| Valid token from a client not in `ALLOWED_CLIENTS` | `403 Forbidden` |
+| Valid token without a user or privileged realm role | `403 Forbidden` |
 | Signing keys cannot be fetched from the AAI | `503 Service Unavailable` |
 
 The health and documentation endpoints (`/`, `/monitoring/*`, `/swagger`, `/redoc`,

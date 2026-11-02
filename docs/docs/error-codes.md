@@ -8,8 +8,8 @@ failures of the underlying LLM are reported.
 | Status Code | Description |
 |---|---|
 | 200 | OK. The input was classified. Also returned when the LLM failed: see [Degraded Answers](#degraded-answers). |
-| 401 | Unauthorized. Authentication is enabled and the token is missing, expired, wrongly signed, or has the wrong issuer or audience. |
-| 403 | Forbidden. The token is valid but its client (`azp`) is not in `ALLOWED_CLIENTS`. |
+| 401 | Unauthorized. Authentication is enabled and the token is missing, expired, wrongly signed, or has the wrong issuer, or lacks the `dg-intent-disambiguation` audience. |
+| 403 | Forbidden. The token is valid but has none of the realm roles `user`, `dg_user`, `dg_admin`, `dg_system`, `dg_dataset-curator`. |
 | 422 | Unprocessable Entity. The request body failed validation: missing or blank `query`, `query` longer than 2000 characters, too many `history` items or `dataset_ids`, or a `dataset_ids` entry that is not a UUID. |
 | 500 | Internal Server Error. An unexpected error occurred in the service. |
 | 503 | Service Unavailable. The AAI signing keys could not be fetched, so the token could not be checked. Retry shortly. |

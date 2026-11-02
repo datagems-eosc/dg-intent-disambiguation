@@ -24,7 +24,6 @@ BASE_SETTINGS = Settings(
     enable_auth=False,
     oidc_issuer="https://idp.test/oauth/realms/dev",
     oidc_audience=None,
-    allowed_clients=frozenset(),
     oidc_verify_ssl=True,
 )
 

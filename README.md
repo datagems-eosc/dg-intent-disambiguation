@@ -104,8 +104,7 @@ All settings are environment variables; see [.env.example](.env.example).
 | `PROMPT_VERSION` | `v2` | Selects `prompts/intent_<version>.yaml` |
 | `ENABLE_AUTH` | `false` | Require a DataGEMS AAI bearer token |
 | `OIDC_ISSUER` | dev realm | Token issuer; keys come from its JWKS endpoint |
-| `OIDC_AUDIENCE` | empty | Required `aud` value, if set |
-| `ALLOWED_CLIENTS` | empty | Comma-separated client ids (`azp`) allowed to call |
+| `OIDC_AUDIENCE` | `dg-intent-disambiguation` | Required `aud` value; empty skips the check |
 
 Logs are structured (structlog). Each request carries the Gateway's
 `x-tracking-correlation` header as `DGCorrelationId`, and the caller as `ClientId` and
@@ -162,7 +161,7 @@ intent_disambiguation/
   main.py          app factory, correlation id and access log middleware
   classifier.py    prompt rendering, LLM call, parsing, confidence threshold, fallback
   llm/scayle.py    SCAYLE client: LDAP token, renewal on 401, one retry
-  auth.py          AAI token validation (JWKS, issuer, expiry, audience, client)
+  auth.py          AAI token validation (JWKS, issuer, expiry, audience, realm role)
   schemas.py       request and response models
   prompts/         versioned prompts
   routes/          intent and health endpoints

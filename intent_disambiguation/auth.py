@@ -15,6 +15,12 @@ bearer = HTTPBearer(auto_error=False)
 # Asymmetric algorithms only: a token signed with a shared secret is never accepted.
 _ALGORITHMS = ["RS256", "RS384", "RS512", "PS256", "ES256"]
 
+# Same role policy as the other DataGEMS services (e.g. cross-dataset discovery): end
+# users carry "user" or "dg_user"; administrators, curators and system pipelines carry a
+# privileged realm role and are accepted too.
+USER_ROLES = frozenset({"user", "dg_user"})
+PRIVILEGED_ROLES = frozenset({"dg_admin", "dg_system", "dg_dataset-curator"})
+
 
 class TokenRejected(Exception):
     def __init__(self, status_code: int, detail: str):
@@ -27,21 +33,19 @@ class TokenVerifier:
     """Validate DataGEMS AAI (Keycloak) access tokens.
 
     Checks the signature against the realm's published keys, the issuer, the
-    expiry, optionally the audience, and optionally that the calling client
-    (``azp``) is on the allow list. Keys are cached for an hour.
+    expiry and the audience, then that the caller holds a user or privileged realm
+    role. Keys are cached for an hour.
     """
 
     def __init__(
         self,
         issuer: str,
         audience: str | None = None,
-        allowed_clients: frozenset[str] = frozenset(),
         verify_ssl: bool = True,
         jwks_client: jwt.PyJWKClient | None = None,
     ):
         self._issuer = issuer.rstrip("/")
         self._audience = audience
-        self._allowed_clients = allowed_clients
         if jwks_client is None:
             ssl_context = ssl.create_default_context()
             if not verify_ssl:
@@ -61,7 +65,6 @@ class TokenVerifier:
         return cls(
             issuer=settings.oidc_issuer,
             audience=settings.oidc_audience,
-            allowed_clients=settings.allowed_clients,
             verify_ssl=settings.oidc_verify_ssl,
         )
 
@@ -87,10 +90,16 @@ class TokenVerifier:
         except jwt.PyJWTError as exc:
             raise TokenRejected(401, "Invalid authentication token") from exc
 
-        client = claims.get("azp") or claims.get("client_id")
-        if self._allowed_clients and client not in self._allowed_clients:
-            logger.warning("Client not allowed", client_id=client)
-            raise TokenRejected(403, "Client not allowed")
+        roles = set(claims.get("realm_access", {}).get("roles", []))
+        if not roles & (USER_ROLES | PRIVILEGED_ROLES):
+            logger.warning(
+                "Caller missing a required role",
+                required_roles=sorted(USER_ROLES | PRIVILEGED_ROLES),
+                user_roles=sorted(roles),
+                UserId=claims.get("sub"),
+                ClientId=claims.get("azp") or claims.get("client_id"),
+            )
+            raise TokenRejected(403, "Caller does not have a required role")
         return claims
 
 
