@@ -1,0 +1,299 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "DataGEMS Intent Disambiguation",
+    "description": "\nDecides whether text typed into the DataGEMS search box asks for **datasets**\n(cross-dataset discovery) or for an **answer** (in-dataset discovery), and returns a\nkeyword query for the discovery step.\n",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/intent": {
+      "post": {
+        "tags": [
+          "Intent"
+        ],
+        "summary": "Decide whether the input asks for datasets or for an answer",
+        "description": "Classify the text a user typed into the home-page search box.\n\n* **dataset_search**: the user wants to find datasets; run cross-dataset discovery.\n* **question**: the user wants an answer; find datasets with cross-dataset discovery,\n  then run in-dataset discovery on them.\n* **ambiguous**: both are plausible; ask the user which one they meant.\n* **out_of_scope**: not a data request.\n\n`search_query` is an English keyword version of the input for cross-dataset\ndiscovery. When the model is unavailable the service still answers with\n`ambiguous`, `degraded: true` and the raw input as `search_query`, so callers\ncan fall back to asking the user.",
+        "operationId": "disambiguate_intent_api_v1_intent_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token"
+          },
+          "403": {
+            "description": "The calling client is not allowed"
+          },
+          "422": {
+            "description": "Invalid request body"
+          },
+          "503": {
+            "description": "The identity provider could not be reached"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/monitoring/ready": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Readiness",
+        "description": "Readiness probe. Does not depend on SCAYLE: an LLM outage must not take the pod\nout of the Service, because the intent endpoint degrades gracefully.",
+        "operationId": "readiness_monitoring_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Readiness Monitoring Ready Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitoring/health-check": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Check Health",
+        "description": "Report whether SCAYLE is reachable and the configured model is listed.\n\nAlways returns HTTP 200 from a live pod; a problem shows up as `status: degraded`.\n\n```json\n{\n    \"status\": \"healthy\",\n    \"version\": \"0.1.0\",\n    \"scayle\": {\"status\": \"healthy\", \"model\": \"qwen3.8-flash-next\", \"model_available\": true}\n}\n```",
+        "operationId": "check_health_monitoring_health_check_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Check Health Monitoring Health Check Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Read Root",
+        "description": "Liveness probe.",
+        "operationId": "read_root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Read Root  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Intent": {
+        "type": "string",
+        "enum": [
+          "dataset_search",
+          "question",
+          "ambiguous",
+          "out_of_scope"
+        ],
+        "title": "Intent"
+      },
+      "IntentContext": {
+        "properties": {
+          "domain": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Domain",
+            "description": "Topic filter selected on the home page, e.g. 'weather'."
+          },
+          "dataset_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Dataset Ids",
+            "description": "Datasets already selected in the conversation."
+          },
+          "history": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "History",
+            "description": "Previous user messages of the conversation, oldest first."
+          }
+        },
+        "type": "object",
+        "title": "IntentContext",
+        "description": "Optional hints about where the input was typed. Used as hints only."
+      },
+      "IntentRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Query",
+            "description": "The text the user typed."
+          },
+          "context": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IntentContext"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "IntentRequest",
+        "examples": [
+          {
+            "query": "What was the mean temperature in Athens in 2020?"
+          },
+          {
+            "context": {
+              "dataset_ids": [
+                "9b25bc46-8bd3-4f7f-94b4-52dbc38c130f"
+              ],
+              "history": [
+                "What was the mean temperature in Athens in 2020?"
+              ]
+            },
+            "query": "and per month?"
+          }
+        ]
+      },
+      "IntentResponse": {
+        "properties": {
+          "intent": {
+            "$ref": "#/components/schemas/Intent",
+            "description": "dataset_search: the user wants to find datasets. question: the user wants an answer computed from data. ambiguous: either is plausible; ask the user. out_of_scope: not a data request."
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "description": "Self-reported by the model."
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "description": "One sentence explaining the decision."
+          },
+          "search_query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Search Query",
+            "description": "English keyword query for cross-dataset discovery. Null when the intent is out_of_scope."
+          },
+          "degraded": {
+            "type": "boolean",
+            "title": "Degraded",
+            "description": "True when the model could not be used and the service fell back to 'ambiguous' with the raw input as search_query."
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "prompt_version": {
+            "type": "string",
+            "title": "Prompt Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "intent",
+          "confidence",
+          "reason",
+          "search_query",
+          "degraded",
+          "model",
+          "prompt_version"
+        ],
+        "title": "IntentResponse",
+        "examples": [
+          {
+            "confidence": 0.95,
+            "degraded": false,
+            "intent": "question",
+            "model": "qwen3.8-flash-next",
+            "prompt_version": "v1",
+            "reason": "Asks for a computed value for a specific place and year.",
+            "search_query": "air temperature Athens 2020"
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
