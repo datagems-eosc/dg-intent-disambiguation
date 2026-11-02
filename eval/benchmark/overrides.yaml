@@ -1,0 +1,342 @@
+# Decisions on the inputs where the judges did not both agree with the generated intent.
+#
+# Rules applied:
+# - Strict relabel when both judges agree on a label that is clearly right in context, or
+#   the input explicitly asks for one thing (e.g. "give me a table of ...").
+# - Bare noun phrases or keywords without consensus are contested: ambiguous,
+#   dataset_search and question are all reasonable; only out_of_scope is wrong.
+# - Noun phrases with a value word (trend, rate, totals, by country) accept question or
+#   ambiguous.
+# - Requests for learning material accept every data flow; MathE material is data.
+# - Questions about a dataset itself (access, API, licence, citation, definitions) accept
+#   dataset_search, question or out_of_scope: the four intents do not model them.
+#
+# Keys are benchmark ids. `intent` alone relabels; `acceptable` marks the input as
+# contested (scored leniently, outside the strict accuracy); `drop: true` removes it.
+
+# Global Carbon Project cement
+bd0a0e54f542: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ERA5-Land snow Austria 2023
+49ac45444e78: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ESCO green skills
+23060400c2dd: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Soil moisture anomalies from ESA CCI
+a72efe1dd4fc: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# biodiversity change at BioTIME freshwater sites in the Amazon 1990s–2020s
+f088cd4b9254: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Wind speed and direction near the Strait of Gibraltar 2019-2023
+657d44406b20: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# glacier retreat in the Alps from Copernicus imagery
+e3770baace39: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Illegal logging in the Congo Basin 2000-2015
+2153807c7fd9: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Richter scale measurements in Japan 2020-2022
+96e6cb25862c: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Global Carbon Project CO2 emissions cement production per country
+08bd7ea985de: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# CEDEFOP employment forecast ανά τομέα European Union 2035
+f943985086ce: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Last-mile delivery geolocated customers και payloads vehicle routing research
+6da36798832c: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Température et humidité aux stations météo grecques
+bbf893cb11c0: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Temperature e umidità orarie delle stazioni meteorologiche greche
+3b02f67502ca: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# cedefop profession forecast replacemnt demand nurses 2030 germany
+b0698f7c6762: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Diderot Encyclopedie medicine articles
+26b6301cbfd5: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# GLOBAL CARBON PROJECT CEMENT CO2 INDIA 2019!
+af1df5c16185: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# I'm working on my PhD thesis analyzing trends in soil moisture across the Greek mainland from 1980 to 2010 usi
+86eb9c8240a7: {acceptable: [ambiguous, dataset_search], intent: ambiguous, note: "Narrative about a research project with no explicit request"}
+# I am a freelance journalist based in Berlin researching an article on the carbon footprint of the construction
+b48694e66c62: {acceptable: [ambiguous, dataset_search], intent: ambiguous, note: "Narrative about a research project with no explicit request"}
+# I am a computational linguist collaborating on a project that uses digitized historical encyclopedias to study
+fda46470fbb8: {acceptable: [ambiguous, dataset_search], intent: ambiguous, note: "Narrative about a research project with no explicit request"}
+# cement CO2 China 2021
+6def3f2a7a27: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Athens temperature
+16a5e429d047: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# youth unemployment in Spain 2024
+3bde9f71c4b4: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Arctic sea ice extent September 2023
+7cd4dd8f06c5: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# statistics failure rates at the Polytechnic Institute of Braganca, 2021-2023
+f290ad943f38: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# CEDEFOP forecast for German manufacturing 2030
+bfe05b3a1b47: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# UK labour force by occupation 2025
+8a3df6d3a22b: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# childhood obesity trends in Southern Europe
+f818f6199b57: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# CO2 ekpobes tsimento kata xora 2000-2020
+5b47451de12f: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Ωριαία θερμοκρασία και υγρασία σε μετεωρολογικούς σταθμούς της Κρήτης
+cac8ed9515be: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Προβλέψεις απασχόλησης ανά τομέα και δεξιότητα έως το 2035
+98ad60785411: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Analyse de sentiments dans les encyclopédies britanniques du 19e siècle
+5eb1028f748d: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# Kohlendioxidemissionen der Zementindustrie in Indien 2022
+fd89d39d01ae: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Ocupações mais procuradas na Europa até 2035
+090124fb3fc5: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# MATHE INTEGRATION BY PARTS EXERCISES
+1402837ad7d1: {acceptable: [dataset_search, question, ambiguous], intent: dataset_search, note: "Request for learning material: MathE resources are data, so not out of scope"}
+# SKILLS FORECAST REPLACEMENT DEMAND NURSES 2030
+96f8f1863dae: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# qualifications
+b5ab77060de2: {acceptable: [question, ambiguous], intent: question, note: "One-word follow-up after a question; most likely the same question for the new term"}
+# ISCO
+9afb24ca77ad: {acceptable: [question, ambiguous], intent: question, note: "One-word follow-up after a question; most likely the same question for the new term"}
+# statistics assessment results 2024
+7e1538a0d8d5: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ISCO managers first level
+1cbbb51ebc60: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# 2023 Barcelona last-mile delivery zones
+b2e4ee65f45b: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Eurostat youth unemployment 2022
+f09d6842f256: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# last mile delivery routes Amsterdam canals 2019
+8ab2922406b7: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# customer geolocations and parcel payloads Milan 2021
+0ac257082d17: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ESCO management occupations Italy
+0af6c27e47df: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Customer geolocation and payload distribution in last-mile delivery: a case study of Lyon, 2022
+75326167a8cb: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Λανθασμένες απαντήσεις φοιτητών σε θέματα πιθανοτήτων
+805b269801b5: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# global carbon project ceement co2 emmisions france 2015
+70a2d38c66d1: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Alpine soil moisture 2018
+5095f4246934: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# LAST MILE DELIVERY ROUTE PLANNING PORTUGAL 🚚
+7c9191b72227: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# MathE probability question bank
+a950205f4e72: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Global Carbon Project cement emissions India
+fa7d0503f487: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# MathE integration question banks Braganca fall 2023
+08413b27d5b5: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Air temperature and relative humidity from Greek weather stations, July 2024
+d8b187e0df88: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ERA5-Land snow depth across Scandinavia 1990-2020
+601259089a44: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# PostNL parcel deliveries Utrecht Christmas 2023
+56f93df8a213: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ERA5-Land surface temperature and precipitation στην Ελλάδα από 1950 μέχρι σήμερα
+798ef2c5bcc7: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# MathE integration topics λάθος απαντήσεις από φοιτητές
+5013cffbadd9: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Χρονοσειρές βιοποικιλότητας από το BioTIME
+8c46146bb282: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Reanálisis ERA5-Land temperatura aire precipitación Europa 1950-2020
+b10b952bcbbe: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# BioTIME abundancia especies marinas series temporales 1990-2010
+5b17978c8f0e: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ERA5-Land Niederschlagsmenge in Skandinavien 1980-2020
+2441d6719441: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Mathematikaufgaben aus MathE zur Prozentrechnung
+54ff5d5230ef: {acceptable: [dataset_search, question, ambiguous], intent: dataset_search, note: "Request for learning material: MathE resources are data, so not out of scope"}
+# Rianalisi climatica ERA5-Land dal 1950: temperatura, precipitazione, umidità del suolo e vento
+e61bb775c4d4: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Serie temporali di abbondanza di specie nei siti di studio BioTIME
+a1be8377ba41: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# era5 land monthly precipetation 1960 iberian
+c62176bd0c45: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# biotime amphibian species abundence south america
+3c49f851268a: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ERA5-LAND SOIL MOISTURE IBERIAN PENINSULA 1980-2000
+e5e5a6fc9f68: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# marine
+5b57caaa2712: {acceptable: [dataset_search, ambiguous], intent: dataset_search, note: "One-word follow-up after a dataset search"}
+# I am a biology teacher at a secondary school in Porto and I am designing a module on long-term biodiversity ch
+97e9cfc4c1fd: {acceptable: [dataset_search, ambiguous], intent: dataset_search, note: "Narrative that points at a named collection without an explicit request"}
+# I am a concerned resident of Amsterdam involved in a neighborhood initiative to reduce truck traffic in the ci
+dcf655988b49: {acceptable: [dataset_search, question, ambiguous], intent: dataset_search, note: "Narrative ending with what the user wants to understand; datasets or an answer both fit"}
+# CEDEFOP apasholisi ana klado kai epaggelma mexri 2035
+1c5fe2be5dec: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Émissions de CO2 de la production de ciment par pays et par année
+a05b64274a2e: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Emisiones CO2 cemento Global Carbon Project países 2000-2020
+beb7d531b1b4: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Beschäftigungsprognose in der Automobilindustrie in Deutschland nach ESCO
+15e2d6ad365b: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# 2021 linear algebra
+4ab17be83af0: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Domande di valutazione di matematica su algebra lineare e probabilità
+0cf21907bca8: {acceptable: [dataset_search, question, ambiguous], intent: dataset_search, note: "Request for learning material: MathE resources are data, so not out of scope"}
+# mathe integration queston bank correct anwsers
+d4e51fe9744c: {acceptable: [dataset_search, question, ambiguous], intent: dataset_search, note: "Request for learning material: MathE resources are data, so not out of scope"}
+# integration by parts
+6f2fb06254c1: {acceptable: [dataset_search, question, ambiguous], intent: dataset_search, note: "Request for learning material: MathE resources are data, so not out of scope"}
+# linear algebra videos Portugal
+d85523206133: {acceptable: [dataset_search, question, ambiguous], intent: dataset_search, note: "Request for learning material: MathE resources are data, so not out of scope"}
+# Zadania z całek podwójnych i potrójnych
+c817d0e2ecc1: {acceptable: [dataset_search, question, ambiguous], intent: dataset_search, note: "Request for learning material: MathE resources are data, so not out of scope"}
+# mathematics
+b62d428cc0b9: {acceptable: [question, ambiguous], intent: question, note: "One-word follow-up after a course listing: the same listing for mathematics"}
+# EU renewable energy share by country 2020
+e2266edcf75c: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# Precipitation totals in the Alpine region during winter 2023-2024
+7775188c4639: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# International tourism arrivals in Thailand 2019
+9beed72be2b0: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Wortfrequenz von 'Freiheit' in der Encyclopaedia Britannica 9. Auflage
+174313b58b4a: {intent: question, note: "Asks for the frequency of a specific word: a computed value"}
+# Abundância de espécies no BioTIME por país
+2bbc73d96649: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# Godzinowa temperatura i wilgotność w greckich stacjach meteorologicznych
+f57aa4d3e7a6: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Występowanie słowa 'obywatel' w encyklopediach z XVIII i XIX wieku
+fbc844da6b66: {intent: question, note: "Asks for the frequency of a specific word: a computed value"}
+# humidity
+fbc9bfbfeaff: {intent: question, note: "One-word follow-up with datasets selected, after a question: the same question for the new term"}
+# precipitation
+94ba8ece2e53: {intent: question, note: "One-word follow-up with datasets selected, after a question: the same question for the new term"}
+# China
+edd3e71fda24: {intent: question, note: "One-word follow-up with datasets selected, after a question: the same question for the new term"}
+# collocations
+41bd043ccfe8: {intent: question, note: "One-word follow-up with datasets selected, after a question: the same question for the new term"}
+# linear algebra
+1cb713da9c93: {intent: question, note: "One-word follow-up with datasets selected, after a question: the same question for the new term"}
+# Previsioni CEDEFOP su occupazione e competenze per settori in Italia fino al 2035
+acfe9468ba67: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# corpus of pedagogic PDFs and videos on integration and calculus for higher education
+e4ff75767384: {intent: dataset_search, note: "Asks for a corpus"}
+# Εκπομπές CO2 από την παραγωγή τσιμέντου στην Ελλάδα και άλλες χώρες (Global Carbon Project)
+ed8b85e76209: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Προβλέψεις δεξιοτήτων και απασχόλησης από το CEDEFOP ανά χώρα και τομέα έως το 2035
+d35448995bbf: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# last-mile delivery customer geodata
+3a02f21936ed: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# CO2 emissions cement per country 2021
+43c18ccee9e4: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# CEDEFOP SKILLS FORECAST EMPLOYMENT IN RENEWABLE ENERGY BY 2035! ⚡💼📅
+6d9bafe98c46: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Hello, I'm a high school teacher. Can I download the Britannica 7th edition datasets for free? Also, what lice
+2d6cb6e7f6ac: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# Housing affordability index for Berlin, Munich, and Hamburg from 2015 to 2023
+a4ca5d349d29: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Need annual tourism arrival figures for coastal regions of Spain and Greece since 2010 for an investigative re
+e48fe24e6f43: {acceptable: [dataset_search, question], intent: dataset_search, note: "Needs figures for a report: the data or the numbers both fit"}
+# Zmiany liczebności gatunków w czasie z bazy BioTIME dla rezerwatów przyrody w Ameryce Południowej
+ce9f1e6c3b00: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# I'm a data scientist working with a conservation NGO and we want to analyze long-term biodiversity trends at M
+44efcb7139e2: {intent: dataset_search, note: "Wants to download tables for their own pipeline"}
+# GLOBAL CARBON PROJECT CO2 EMISSIONS FROM CEMENT BY COUNTRY 2023 UPDATE! 🔥📈
+40b54715536e: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# is there a public API for the Polytechnic Institute of Braganca course offerings, 2024/25 catalogue?
+f863528fec46: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# As a NLP researcher, I'm looking to use the EncycNet corpus. Is there an API to access the term frequency list
+b60bc70f621d: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# teacher looking for mathe platform question bank with correct and wrong ansers for linear algebra and intergra
+c71238d89a26: {intent: dataset_search, note: "Looking for a question bank, which is a dataset"}
+# which licence applies to the MathE question bank — can I redistribute the wrong-answer options in my own teach
+fa23d610e52c: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# routing veicoli consegne ultimo miglio clienti geolocalizzati
+51983545d0a0: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# frequência de termos e colocações nas enciclopédias digitalizadas do século XIX, como a Britannica de 1875
+2c0b7f94ddd6: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# previsão CEDEFOP da procura de emprego por setor e qualificação até 2035
+d548c6505a73: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# replacement demand manufacturing 2035
+62e50d0c413c: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Our little investigative desk in Krakow has spent months on the cement industry — the plant near Opole, the pl
+b7179a304b84: {acceptable: [ambiguous, dataset_search], intent: ambiguous, note: "Narrative about a story with no explicit request"}
+# humedad del suelo ERA5-Land
+946083b1dbd0: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# era5-land temperatura e umidità del suolo dal 1950
+1bcc5182aa15: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# BioTIME serie storiche di abbondanza delle specie
+d3f1e75be91a: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# mathe intergration queston bank
+da74a8cb257a: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# era5 soil moisture drought spain
+e84bd5972da3: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# hourly humidity Crete weather stations
+edf096cc6b52: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# global carbon projet ciment emisions china 2019
+552cff4eaec7: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# cedfop skils forcast replacment demand by sector til 2035
+bd6053433f10: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# cement CO2 emissions China 2019
+d74dd926e8a5: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# collocations Britannica 9th edition
+d865abd4f3d3: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# CEDEFOP previsioni delle competenze domanda per qualifica fino al 2035
+4366a8d82ed1: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# yparxei metafrasi sta ellinika tis skills forecast tis CEDEFOP? tha ithela na tin xrisimopoiiso se arthro gia
+2d5de49569ae: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# mipos exete api gia to CO2 tou Global Carbon Project i prepei na kano manual download ta csv;
+b6f9ba553a48: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# temperatura y humedad horarias en estaciones meteorológicas de Grecia
+b0b774acfb83: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# emisiones de CO2 de la producción de cemento por país y año Global Carbon Project
+7bb44cc5ce2f: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# abundancia de especies en sitios de muestreo BioTIME
+7054177b8fb9: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# novena edición de la Encyclopaedia Britannica digitalizada 1875
+7e5db749b4f3: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# enciclopedie storiche digitalizzate da Diderot alla Britannica 1875
+50b865a8feb0: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# temperatura e humidade horárias nas estações meteorológicas da Grécia
+e0ad7c216dcb: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# ERA5-Land: humidade do solo, neve e precipitação em grelha de 0,1° desde 1950
+d4d6bcca3e62: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# banco de perguntas de probabilidade e estatística do MathE com respostas corretas e erradas
+2a4705b21bcf: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# era5 land reanilysis soile moistuire from 1950
+f9cef1d69828: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# last mile dilivery custumer locatoins for vechicle routng
+0b887d403745: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# old britanica 9th editon digatised pages 1875
+8cdba4e0270a: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# BioTIME freshwater abundance
+bc4c481c1e51: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# Y a-t-il une API REST pour interroger les séries de BioTIME depuis Python, et quel est le quota de requêtes à
+f30980e72cfa: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# Last spring I defended my master's thesis on urban heat in Athens and now, as a PhD student in Patras, I keep
+b6201a00e727: {acceptable: [ambiguous, dataset_search, out_of_scope], intent: ambiguous, note: "Narrative with no request at all"}
+# Is there an API??? 🔌💻 my team refuses to click 'download CSV' 500 times, sorry!!
+6689652976ed: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# ti einai akribos to reanalysis? to ERA5 exei pragmatikes metriseis apo stathmous i einai prosomoiosi apo to 19
+c4ad52bfef3b: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# Τι ακριβώς σημαίνει 'replacement demand' στο skills forecast της CEDEFOP; Το ψάχνω για δημοσίευμα.
+d2455bf5ba65: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# Welche Lizenz gilt, wenn ich ESCO-Berufsbeschreibungen in einem öffentlichen Bericht zitieren möchte?
+dfca087ec69c: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# Piszę doktorat o suszach w Attyce i nie mogę znaleźć wzoru cytowania dla ERA5-Land — jest gdzieś oficjalne DOI
+b8346e54396c: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# Comment citer correctement le jeu de données ERA5-Land d'ECMWF dans ma thèse, il y a un DOI officiel ?
+99af00c70078: {acceptable: [dataset_search, question, out_of_scope], intent: dataset_search, note: "Question about a dataset itself (access, API, licence, citation, meaning); the four intents do not cover it well"}
+# employment trend health sector Spain 2020 2035
+e8236197bfef: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# Cement CO2 in India 2018
+6121e05a139c: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# MathE integration student error rate by topic
+ad674dcd4645: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# statistics video lecture completion exam score correlation MathE
+70676efcafd7: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# hourly temperature Athens stations 5 August 2023
+0c4a7159d32f: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# IT specialists employment forecast Poland 2035
+53e05c60730e: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# fish abundance trend Mediterranean BioTIME sites 2001-2020
+a7b796dc4f33: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# pass rate probability questions MathE 2023
+97e40fa5afd6: {acceptable: [question, ambiguous], intent: question, note: "Noun phrase with a value word (trend, rate, totals, by ...): answer or ask"}
+# youth unemployment rate Greece 2015-2023 Eurostat yearly figures
+f616b8d2275c: {acceptable: [ambiguous, dataset_search, question], intent: ambiguous, note: "Bare noun phrase without consensus: any data flow is reasonable"}
+# I need a table of annual term frequencies for 'telegraph' in the 7th Britannica (1830–1842).
+0f04881492a0: {intent: question, note: "Explicitly asks for a table of values"}
+# Tha iela enan pinaka me ti provlepsi tis apasxolisis ana sektora stin Ellada eos to 2035 apo to CEDEFOP
+6e771db6fdd4: {intent: question, note: "Explicitly asks for a table of values"}
+# Gib mir eine Tabelle mit den CO2-Emissionen aus der Zementproduktion für Deutschland und Polen von 2000 bis 20
+2e021add29d9: {intent: question, note: "Explicitly asks for a table of values"}
+# Does the Polytechnic Institute of Braganca offer any master's course in data science?
+a5b8f1d1871a: {acceptable: [question, out_of_scope], intent: question, note: "Answerable from the IPB course offering data, but reads like a general question"}
+# Change the chart to a time series comparison between coastal and inland grid cells.
+ffdabc4eb51c: {intent: question, note: "Follow-up changing the chart of a previous answer"}
