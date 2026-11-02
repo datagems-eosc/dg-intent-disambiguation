@@ -37,7 +37,7 @@ is set with `INTENT_MODEL`.
 
 ### How fast is it?
 
-About 1.4 s per request, and 1.7 s at the 95th percentile, measured on the benchmark.
+About 0.7 s per request, and 1.1 s at the 95th percentile, measured one request at a time on benchmark inputs.
 
 ### What happens when SCAYLE is down?
 
@@ -51,9 +51,12 @@ Either the model's confidence was below `INTENT_MIN_CONFIDENCE`, or the answer i
 service deliberately leaves to the user. Short keyword inputs that name a dataset or ask
 for a value are a known weak spot; see [Evaluation](evaluation.md#known-weak-spots).
 
-### Should the UI show `reason` to users?
+### Why does the response not explain its decision?
 
-No. It is an English sentence meant for debugging and logs.
+An explanation costs generation time. Prompt `v1` returned a one-sentence `reason`;
+dropping it made answers about 100 ms faster at the median and 430 ms at the 95th
+percentile, with the same accuracy. The `confidence` field and the logs are the
+diagnostics now.
 
 ### Can I send the conversation so far?
 

@@ -15,13 +15,14 @@ pytestmark = pytest.mark.anyio
 
 
 def make_classifier(llm: FakeLLM, **kwargs) -> IntentClassifier:
-    return IntentClassifier(llm, "test-model", PromptTemplate.load("v1"), **kwargs)
+    return IntentClassifier(llm, "test-model", PromptTemplate.load("v2"), **kwargs)
 
 
 def test_prompt_renders_the_examples():
-    prompt = PromptTemplate.load("v1")
+    prompt = PromptTemplate.load("v2")
 
-    assert prompt.version == "v1"
+    assert prompt.version == "v2"
+    assert "reason" not in RESPONSE_SCHEMA["properties"]
     assert "{examples}" not in prompt.system
     assert '- Input: "write a haiku about rain"' in prompt.system
     assert '"intent": "out_of_scope", "search_query": null' in prompt.system
@@ -77,7 +78,7 @@ async def test_blank_search_query_falls_back_to_the_input():
     "reply",
     [
         "not json at all",
-        '{"intent": "maybe", "confidence": 0.9, "reason": "", "search_query": null}',
+        '{"intent": "maybe", "confidence": 0.9, "search_query": null}',
         '{"intent": "question"}',
     ],
 )
@@ -96,9 +97,6 @@ async def test_scayle_error_degrades():
 
 
 def test_parse_answer_accepts_fenced_json():
-    content = (
-        '```json\n{"reason": "r", "intent": "question", "confidence": 0.8, '
-        '"search_query": "x"}\n```'
-    )
+    content = '```json\n{"intent": "question", "confidence": 0.8, "search_query": "x"}\n```'
 
     assert parse_answer(content).intent is Intent.QUESTION

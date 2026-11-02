@@ -21,7 +21,7 @@ a keyword query for the discovery step.
 ## Key Features
 
 - **One call, one answer**: a single LLM call with strict JSON-schema output returns the
-  intent, a confidence, a one-sentence reason and an English keyword query.
+  intent, a confidence and an English keyword query, in about 0.7 s.
 - **Any language**: inputs in Greek, Greeklish, French, German, Spanish, Italian,
   Portuguese and Polish are handled like English ones.
 - **Conversation aware**: optional context (selected datasets, earlier messages, the

@@ -1,6 +1,6 @@
 # Labelled inputs for `make eval`.
 #
-# Labels follow the definitions in intent_disambiguation/prompts/intent_v1.yaml.
+# Labels follow the definitions in intent_disambiguation/prompts/intent_v2.yaml.
 # Do not copy the prompt's examples here. `note` marks labels that people may disagree
 # on. `context` takes the same fields as the API request.
 

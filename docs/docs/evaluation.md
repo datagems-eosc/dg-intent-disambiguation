@@ -58,26 +58,47 @@ keyword inputs, which is why misroutes matter more than accuracy.
 
 ### Results
 
-Measured on 30 October 2026 with `qwen3.8-flash-next`:
+Measured on 2 November 2026 with `qwen3.8-flash-next`:
 
-| Configuration | Accuracy | Misroutes | Contested | Degraded | Latency p50 / p95 |
-|---|---|---|---|---|---|
-| **Prompt v1, thinking off (deployed)** | **96.5%** | **4** | 98.5% | 0 | 1.4 s / 1.7 s |
-| Prompt v1, thinking on | 96.9% | 0 | 96.4% | 31 | 2.4 s / 6.9 s |
-| Prompt v2 candidate, thinking off | 95.1% | 3 | 97.5% | 0 | 1.5 s / 1.7 s |
+| Configuration | Strict accuracy | Misroutes | Contested | Degraded |
+|---|---|---|---|---|
+| **Prompt v2, thinking off (deployed)** | **96.5%** | **2** | 97.5% | 0 |
+| Prompt v1 (with `reason`), thinking off | 96.5% | 4 | 98.5% | 0 |
+| Prompt v1, thinking on | 96.9% | 0 | 96.4% | 31 |
+| Rules candidate (not kept), thinking off | 95.1% | 3 | 97.5% | 0 |
+
+Latency, measured one request at a time on 120 benchmark inputs, alternating the two
+prompts so that both see the same load:
+
+| Prompt | Median | Mean | p95 |
+|---|---|---|---|
+| **v2 (deployed)** | **715 ms** | **756 ms** | **1142 ms** |
+| v1 (with `reason`) | 819 ms | 921 ms | 1569 ms |
+
+Under the same parallel load, thinking on was about 1.7 times slower at the median and
+four times slower at p95 than thinking off.
+
+Prompt `v1` asked for a one-sentence `reason` before the label, so that the model would
+explain itself first. It did not pay for itself: `v2` drops it and keeps the accuracy,
+with fewer misroutes and a shorter tail.
 
 With the deployed configuration:
 
-- Precision / recall per intent: dataset_search 98.5 / 94.6, question 98.3 / 97.6,
-  ambiguous 86.8 / 94.8, out_of_scope 97.8 / 98.9.
-- Every English phrasing style, all 7 domains, all kinds of out-of-scope input
-  (including prompt injection) and French, German, Spanish, Greek and Greek-English score
-  95 to 100%. Portuguese and Polish are lowest at 85%, on 20 inputs each.
+- Per intent, precision / recall: dataset_search 95.2 / 97.1, question 99.3 / 97.9,
+  ambiguous 89.6 / 88.7, out_of_scope 97.8 / 98.9.
+- Every English phrasing style, the 7 domains, the 8 kinds of out-of-scope input
+  (including prompt injection) and French, German, Greek and Greek-English are at 95 to
+  100%. Greeklish is lowest at 85%, then Spanish, Italian and Portuguese at 90%, on 20
+  inputs each.
 - The regression set scores 100% with no misroutes.
+- The 2 misroutes: a REST API question about ESCO that the judges labelled
+  dataset_search and the model answered out of scope, and a Polish request for the
+  occurrences of a word that the model read as a dataset search.
 
 With thinking on, 31 replies ran out of the token budget while still reasoning and fell
-back to the degraded answer. The v2 candidate added rules for the error patterns below; it
-moved errors between intents rather than removing them, so it was not kept.
+back to the degraded answer. The rules candidate added prompt rules for the error
+patterns below; it moved errors between intents rather than removing them, so it was not
+kept.
 
 ### Known Weak Spots
 
@@ -85,7 +106,7 @@ moved errors between intents rather than removing them, so it was not kept.
   BY PARTS EXERCISES") is sometimes marked `out_of_scope`. Whether such requests should
   go to dataset search or to the MathE recommendation endpoint is still to be decided.
 - **Questions about a dataset itself** (licence, API, citation) do not fit the four
-  intents cleanly; two of the four misroutes are of this kind.
+  intents cleanly; one of the two misroutes is of this kind.
 - **One-word follow-ups** after a question ("precipitation"), **terse value phrases**
   ("average July temperature Heraklion 2019") and **keywords naming a dataset**
   ("ERA5-Land soil moisture France 2005") are often answered `ambiguous`. These cost the

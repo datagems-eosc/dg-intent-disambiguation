@@ -14,21 +14,18 @@ from intent_disambiguation.schemas import Intent, IntentContext, IntentResponse
 
 PROMPTS_DIR = Path(__file__).parent / "prompts"
 
-# Strict structured output. "reason" comes first so the model explains itself before
-# it commits to a label, which helps when thinking is disabled.
+# Strict structured output, kept minimal: every generated token adds latency.
 RESPONSE_SCHEMA: dict[str, Any] = {
     "type": "object",
     "properties": {
-        "reason": {"type": "string"},
         "intent": {"type": "string", "enum": [intent.value for intent in Intent]},
         "confidence": {"type": "number"},
         "search_query": {"type": ["string", "null"]},
     },
-    "required": ["reason", "intent", "confidence", "search_query"],
+    "required": ["intent", "confidence", "search_query"],
     "additionalProperties": False,
 }
 
-FALLBACK_REASON = "The intent model is unavailable, so the user should choose."
 _JSON_OBJECT = re.compile(r"\{.*\}", re.DOTALL)
 
 
@@ -46,7 +43,6 @@ class ChatModel(Protocol):
 
 
 class ModelAnswer(BaseModel):
-    reason: str = ""
     intent: Intent
     confidence: float
     search_query: str | None = None
@@ -182,7 +178,6 @@ class IntentClassifier:
         return IntentResponse(
             intent=intent,
             confidence=confidence,
-            reason=answer.reason.strip(),
             search_query=search_query,
             degraded=False,
             model=self.model,
@@ -193,7 +188,6 @@ class IntentClassifier:
         return IntentResponse(
             intent=Intent.AMBIGUOUS,
             confidence=0.0,
-            reason=FALLBACK_REASON,
             search_query=query,
             degraded=True,
             model=self.model,

@@ -38,7 +38,7 @@ ConfigMap, and the credentials from a Vault-backed Secret (see
 | `INTENT_ENABLE_THINKING` | `false` | Let the model reason before answering. Slower, and reasoning counts against `INTENT_MAX_TOKENS`. |
 | `INTENT_MAX_TOKENS` | `1024` | Output token budget per call, including reasoning tokens. |
 | `INTENT_MIN_CONFIDENCE` | `0.6` | Labels other than `ambiguous` below this confidence are returned as `ambiguous`. |
-| `PROMPT_VERSION` | `v1` | Selects `intent_disambiguation/prompts/intent_<version>.yaml`. |
+| `PROMPT_VERSION` | `v2` | Selects `intent_disambiguation/prompts/intent_<version>.yaml`. |
 
 ### Authentication
 

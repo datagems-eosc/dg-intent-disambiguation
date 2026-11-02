@@ -1,6 +1,6 @@
 [project]
 name = "intent_disambiguation"
-version = "0.1.0"
+version = "0.2.0"
 description = "Intent disambiguation service of the DataGEMS platform"
 authors = [{ name = "DataGEMS", email = "mxydas@athenarc.gr" }]
 readme = "README.md"

@@ -52,11 +52,10 @@ Swagger: `https://datagems-dev.scayle.es/dg-intent-disambiguation/swagger`
 {
   "intent": "question",
   "confidence": 0.95,
-  "reason": "Asks for a computed value for a specific place and year.",
   "search_query": "mean temperature Athens 2020",
   "degraded": false,
   "model": "qwen3.8-flash-next",
-  "prompt_version": "v1"
+  "prompt_version": "v2"
 }
 ```
 
@@ -64,7 +63,6 @@ Swagger: `https://datagems-dev.scayle.es/dg-intent-disambiguation/swagger`
 |---|---|
 | `intent` | `dataset_search`, `question`, `ambiguous` or `out_of_scope` |
 | `confidence` | 0 to 1, reported by the model. Labels below 0.6 are already turned into `ambiguous`. |
-| `reason` | One English sentence. Useful for debugging; not meant for end users. |
 | `search_query` | English keywords for cross-dataset discovery. `null` only for `out_of_scope`. |
 | `degraded` | `true` when the model could not be reached. The answer is then `ambiguous` with the raw input as `search_query`. |
 | `model`, `prompt_version` | What produced the answer, for logs and comparisons. |
@@ -79,7 +77,7 @@ Swagger: `https://datagems-dev.scayle.es/dg-intent-disambiguation/swagger`
 | 422 | Invalid body (blank or overlong query, malformed `dataset_ids`) |
 | 503 | The AAI keys could not be fetched to check the token |
 
-Latency is about 1.4 s typical and 1.7 s at the 95th percentile. Set a client timeout of about 30 s:
+Latency is about 0.7 s typical and 1.1 s at the 95th percentile. Set a client timeout of about 30 s:
 the service's own call to SCAYLE times out after 20 s.
 
 ## Suggested routing

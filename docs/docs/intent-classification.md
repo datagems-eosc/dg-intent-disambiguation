@@ -18,7 +18,7 @@ A request for a value stays a `question` even when it mentions data or datasets
 ## Prompt
 
 The prompt is a versioned YAML file in `intent_disambiguation/prompts/`, selected with
-`PROMPT_VERSION` (default `v1`). It contains:
+`PROMPT_VERSION` (default `v2`). It contains:
 
 - a short description of the platform and the kinds of data it hosts,
 - the four intent definitions and the decision rules,
@@ -48,15 +48,16 @@ The model is called with temperature 0 and a strict JSON schema:
 
 ```json
 {
-  "reason": "string",
   "intent": "dataset_search | question | ambiguous | out_of_scope",
   "confidence": "number",
   "search_query": "string or null"
 }
 ```
 
-`reason` comes first so the model states why before it commits to a label, which helps
-when its reasoning phase is switched off. The answer is validated with pydantic; text
+The schema is kept to the fields the caller needs: every generated token adds
+latency. Prompt `v1` also asked for a one-sentence `reason` before the label; removing
+it in `v2` cut median latency by about 100 ms and 95th-percentile latency by about
+430 ms with the same benchmark accuracy. The answer is validated with pydantic; text
 around the JSON object (code fences, for example) is tolerated.
 
 ## Rules Applied After the Model Answers
@@ -79,7 +80,6 @@ the service answers `200` with:
 {
   "intent": "ambiguous",
   "confidence": 0.0,
-  "reason": "The intent model is unavailable, so the user should choose.",
   "search_query": "<the raw input>",
   "degraded": true
 }
@@ -108,8 +108,8 @@ answer. See [Evaluation](evaluation.md).
 
 ## Changing the Prompt
 
-1. Add `prompts/intent_v2.yaml`. Keep its examples out of the evaluation sets.
-2. Run the evaluation with `--prompt-version v2` on the regression set and the benchmark,
-   and compare with `v1`. Look at misroutes as well as accuracy.
-3. Switch with `PROMPT_VERSION=v2` in the deployment configuration. The response's
+1. Add `prompts/intent_v3.yaml`. Keep its examples out of the evaluation sets.
+2. Run the evaluation with `--prompt-version v3` on the regression set and the benchmark,
+   and compare with `v2`. Look at misroutes as well as accuracy.
+3. Switch with `PROMPT_VERSION=v3` in the deployment configuration. The response's
    `prompt_version` field shows which prompt produced each answer.

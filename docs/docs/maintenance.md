@@ -18,7 +18,7 @@ curl -X GET "https://{host}/dg-intent-disambiguation/monitoring/ready"
 Expected responses:
 
 ```json
-{"service": "dg-intent-disambiguation", "version": "0.1.0"}
+{"service": "dg-intent-disambiguation", "version": "0.2.0"}
 {"status": "ready"}
 ```
 
@@ -37,7 +37,7 @@ Expected response:
 ```json
 {
   "status": "healthy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scayle": {"status": "healthy", "model": "qwen3.8-flash-next", "model_available": true}
 }
 ```

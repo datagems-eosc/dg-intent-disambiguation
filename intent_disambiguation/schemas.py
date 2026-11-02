@@ -79,11 +79,10 @@ class IntentResponse(BaseModel):
                 {
                     "intent": "question",
                     "confidence": 0.95,
-                    "reason": "Asks for a computed value for a specific place and year.",
                     "search_query": "air temperature Athens 2020",
                     "degraded": False,
                     "model": "qwen3.8-flash-next",
-                    "prompt_version": "v1",
+                    "prompt_version": "v2",
                 }
             ]
         }
@@ -98,7 +97,6 @@ class IntentResponse(BaseModel):
         )
     )
     confidence: float = Field(ge=0.0, le=1.0, description="Self-reported by the model.")
-    reason: str = Field(description="One sentence explaining the decision.")
     search_query: str | None = Field(
         description=(
             "English keyword query for cross-dataset discovery. "

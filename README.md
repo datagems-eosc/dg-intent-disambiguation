@@ -26,7 +26,7 @@ and how the Gateway and the UI are expected to use it.
 ## How it works
 
 One call to an LLM on SCAYLE (`qwen3.8-flash-next` by default) with a versioned prompt
-([intent_disambiguation/prompts/intent_v1.yaml](intent_disambiguation/prompts/intent_v1.yaml))
+([intent_disambiguation/prompts/intent_v2.yaml](intent_disambiguation/prompts/intent_v2.yaml))
 and strict JSON-schema output. A label with confidence below `INTENT_MIN_CONFIDENCE`
 becomes `ambiguous`. If SCAYLE fails, the endpoint still answers `ambiguous` with
 `degraded: true`, so the home page keeps working and the user is asked to choose.
@@ -77,12 +77,12 @@ any that were routed wrongly.
 The independent measurement is the **benchmark** in [eval/benchmark/](eval/benchmark/):
 876 inputs written and labelled by other model families (DeepSeek and GLM), reviewed by
 hand, in 10 languages, with noise, follow-ups and contested cases. On it the deployed
-configuration scores 96.5% strict accuracy with 4 misroutes in 679 inputs. Run it with
+configuration scores 96.5% strict accuracy with 2 misroutes in 679 inputs. Run it with
 `make benchmark`. See the [benchmark README](eval/benchmark/README.md) for the method, the
 results and the error patterns.
 
 To change the prompt, add `prompts/intent_v2.yaml`, run
-`uv run --env-file .env python eval/run_eval.py --prompt-version v2`, compare it with v1,
+`uv run --env-file .env python eval/run_eval.py --prompt-version v3`, compare it with v2,
 and then set `PROMPT_VERSION`. Keep the prompt's examples out of the evaluation set.
 
 ## Configuration
@@ -101,7 +101,7 @@ All settings are environment variables; see [.env.example](.env.example).
 | `INTENT_ENABLE_THINKING` | `false` | Reasoning before answering; slower |
 | `INTENT_MAX_TOKENS` | `1024` | Includes reasoning tokens when thinking is on |
 | `INTENT_MIN_CONFIDENCE` | `0.6` | Lower confidence becomes `ambiguous` |
-| `PROMPT_VERSION` | `v1` | Selects `prompts/intent_<version>.yaml` |
+| `PROMPT_VERSION` | `v2` | Selects `prompts/intent_<version>.yaml` |
 | `ENABLE_AUTH` | `false` | Require a DataGEMS AAI bearer token |
 | `OIDC_ISSUER` | dev realm | Token issuer; keys come from its JWKS endpoint |
 | `OIDC_AUDIENCE` | empty | Required `aud` value, if set |
@@ -126,9 +126,9 @@ Logs are structured (structlog). Each request carries the Gateway's
 1. Bump `version` in `pyproject.toml` and `intent_disambiguation/__init__.py`.
 2. Tag `vX.Y.Z` and push the tag. GitHub Actions publishes
    `ghcr.io/datagems-eosc/dg-intent-disambiguation:vX.Y.Z`.
-3. Update the image tag in `dg-intent-disambiguation-deployments` and run its deploy
-   script.
-4. Run the **Deploy Docs (On-Demand)** workflow with the version, e.g. `0.1.0`. It
+3. Update the image tag in `dg-intent-disambiguation-deployment-dev` (then `-prod`) and
+   run its deploy script.
+4. Run the **Deploy Docs (On-Demand)** workflow with the version, e.g. `0.2.0`. It
    publishes the site to GitHub Pages with `mike` and points `latest` at it.
 
 ## Documentation

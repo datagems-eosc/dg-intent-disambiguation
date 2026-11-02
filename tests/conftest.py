@@ -20,7 +20,7 @@ BASE_SETTINGS = Settings(
     intent_enable_thinking=False,
     intent_max_tokens=256,
     intent_min_confidence=0.6,
-    prompt_version="v1",
+    prompt_version="v2",
     enable_auth=False,
     oidc_issuer="https://idp.test/oauth/realms/dev",
     oidc_audience=None,
@@ -36,11 +36,9 @@ def make_settings(**overrides) -> Settings:
 def model_answer(
     intent: str = "question",
     confidence: float = 0.9,
-    reason: str = "Asks for a value.",
     search_query: str | None = "temperature Athens 2020",
 ) -> dict:
     return {
-        "reason": reason,
         "intent": intent,
         "confidence": confidence,
         "search_query": search_query,

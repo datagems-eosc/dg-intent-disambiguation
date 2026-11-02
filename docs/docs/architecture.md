@@ -50,7 +50,7 @@ on with `ENABLE_AUTH`. See [Security](security.md).
    `<context>` block with the topic filter, the number of selected datasets and the last
    five earlier messages.
 3. Calls the LLM with temperature 0 and a strict JSON schema
-   (`reason`, `intent`, `confidence`, `search_query`).
+   (`intent`, `confidence`, `search_query`).
 4. Parses and validates the answer, applies the confidence threshold and fixes up
    `search_query`.
 5. On any failure (connection, timeout, empty or invalid output) returns the
@@ -84,7 +84,7 @@ sequenceDiagram
     ID->>ID: validate token, render prompt
     ID->>LLM: POST /chat/completions (JSON schema)
     alt answer received
-        LLM-->>ID: {reason, intent, confidence, search_query}
+        LLM-->>ID: {intent, confidence, search_query}
         ID->>ID: confidence threshold, fix search_query
         ID-->>GW: 200 {intent, ..., degraded: false}
     else LLM down, timeout or invalid output

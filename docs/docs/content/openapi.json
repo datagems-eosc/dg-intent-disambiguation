@@ -3,7 +3,7 @@
   "info": {
     "title": "DataGEMS Intent Disambiguation",
     "description": "\nDecides whether text typed into the DataGEMS search box asks for **datasets**\n(cross-dataset discovery) or for an **answer** (in-dataset discovery), and returns a\nkeyword query for the discovery step.\n",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "paths": {
     "/api/v1/intent": {
@@ -85,7 +85,7 @@
           "Health"
         ],
         "summary": "Check Health",
-        "description": "Report whether SCAYLE is reachable and the configured model is listed.\n\nAlways returns HTTP 200 from a live pod; a problem shows up as `status: degraded`.\n\n```json\n{\n    \"status\": \"healthy\",\n    \"version\": \"0.1.0\",\n    \"scayle\": {\"status\": \"healthy\", \"model\": \"qwen3.8-flash-next\", \"model_available\": true}\n}\n```",
+        "description": "Report whether SCAYLE is reachable and the configured model is listed.\n\nAlways returns HTTP 200 from a live pod; a problem shows up as `status: degraded`.\n\n```json\n{\n    \"status\": \"healthy\",\n    \"version\": \"0.2.0\",\n    \"scayle\": {\"status\": \"healthy\", \"model\": \"qwen3.8-flash-next\", \"model_available\": true}\n}\n```",
         "operationId": "check_health_monitoring_health_check_get",
         "responses": {
           "200": {
@@ -234,11 +234,6 @@
             "title": "Confidence",
             "description": "Self-reported by the model."
           },
-          "reason": {
-            "type": "string",
-            "title": "Reason",
-            "description": "One sentence explaining the decision."
-          },
           "search_query": {
             "anyOf": [
               {
@@ -269,7 +264,6 @@
         "required": [
           "intent",
           "confidence",
-          "reason",
           "search_query",
           "degraded",
           "model",
@@ -282,8 +276,7 @@
             "degraded": false,
             "intent": "question",
             "model": "qwen3.8-flash-next",
-            "prompt_version": "v1",
-            "reason": "Asks for a computed value for a specific place and year.",
+            "prompt_version": "v2",
             "search_query": "air temperature Athens 2020"
           }
         ]

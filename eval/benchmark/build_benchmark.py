@@ -558,7 +558,7 @@ async def generate(concurrency: int) -> None:
 
 def unique_generated() -> list[dict]:
     """Generated rows without duplicates or copies of the prompt's examples."""
-    prompt = yaml.safe_load((PROMPTS_DIR / "intent_v1.yaml").read_text("utf-8"))
+    prompt = yaml.safe_load((PROMPTS_DIR / "intent_v2.yaml").read_text("utf-8"))
     banned = {normalize(e["query"]) for e in prompt["examples"]}
     seen: set[str] = set()
     rows = []

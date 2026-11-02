@@ -14,11 +14,10 @@ def test_returns_the_model_answer(client):
     assert response.json() == {
         "intent": "question",
         "confidence": 0.9,
-        "reason": "Asks for a value.",
         "search_query": "temperature Athens 2020",
         "degraded": False,
         "model": "test-model",
-        "prompt_version": "v1",
+        "prompt_version": "v2",
     }
 
 

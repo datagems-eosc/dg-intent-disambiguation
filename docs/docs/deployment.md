@@ -23,7 +23,7 @@ make docker-run   # builds the image and runs it with the settings in .env
 
 ## Kubernetes
 
-The Kubernetes manifests are kept in a separate deployment repository, one folder per environment, applied with kustomize. In the development environment the service runs in the `athenarc` namespace as:
+The Kubernetes manifests are kept in two deployment repositories, `dg-intent-disambiguation-deployment-dev` and `dg-intent-disambiguation-deployment-prod`, applied with kustomize. Each has a deploy script that refuses to run against the other environment's cluster; the prod script also asks for typed confirmation. In the development environment the service runs in the `athenarc` namespace as:
 
 | Resource | Name |
 |---|---|

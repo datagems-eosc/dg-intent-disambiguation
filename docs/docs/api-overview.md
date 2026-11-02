@@ -71,11 +71,10 @@ Decides whether the text a user typed asks for datasets or for an answer.
 {
   "intent": "question",
   "confidence": 0.95,
-  "reason": "Asks for a computed value for a specific place and year.",
   "search_query": "mean temperature Athens 2020",
   "degraded": false,
   "model": "qwen3.8-flash-next",
-  "prompt_version": "v1"
+  "prompt_version": "v2"
 }
 ```
 
@@ -83,7 +82,6 @@ Decides whether the text a user typed asks for datasets or for an answer.
 |---|---|---|
 | `intent` | string | `dataset_search`, `question`, `ambiguous` or `out_of_scope`. See [Intent Classification](intent-classification.md#intents). |
 | `confidence` | number | 0 to 1, reported by the model. Labels below the threshold have already been turned into `ambiguous`. |
-| `reason` | string | One English sentence explaining the decision. Meant for debugging, not for end users. |
 | `search_query` | string or null | English keywords for cross-dataset discovery. `null` only for `out_of_scope`. |
 | `degraded` | boolean | `true` when the model could not be used; the answer is then `ambiguous` with the raw input as `search_query`. |
 | `model` | string | The model that produced the answer. |
@@ -103,15 +101,14 @@ curl -X POST "https://{host}/dg-intent-disambiguation/api/v1/intent" \
 {
   "intent": "dataset_search",
   "confidence": 1.0,
-  "reason": "The user asks whether data on a topic exists, which is a request to find datasets.",
   "search_query": "air pollution Athens",
   "degraded": false,
   "model": "qwen3.8-flash-next",
-  "prompt_version": "v1"
+  "prompt_version": "v2"
 }
 ```
 
-Typical latency is about 1.4 s, and 1.7 s at the 95th percentile. Callers should set a
+Typical latency is about 0.7 s, and 1.1 s at the 95th percentile. Callers should set a
 timeout of about 30 s: the service's own call to SCAYLE times out after 20 s.
 
 ### Liveness
@@ -121,7 +118,7 @@ GET /
 ```
 
 ```json
-{"service": "dg-intent-disambiguation", "version": "0.1.0"}
+{"service": "dg-intent-disambiguation", "version": "0.2.0"}
 ```
 
 ### Readiness
@@ -148,7 +145,7 @@ Reports whether SCAYLE is reachable and the configured model is listed. Always r
 ```json
 {
   "status": "healthy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scayle": {"status": "healthy", "model": "qwen3.8-flash-next", "model_available": true}
 }
 ```

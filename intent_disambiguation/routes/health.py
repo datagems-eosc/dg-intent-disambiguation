@@ -28,7 +28,7 @@ async def check_health(request: Request) -> dict:
     ```json
     {
         "status": "healthy",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "scayle": {"status": "healthy", "model": "qwen3.8-flash-next", "model_available": true}
     }
     ```
