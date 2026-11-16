@@ -55,7 +55,7 @@ Swagger: `https://datagems-dev.scayle.es/dg-intent-disambiguation/swagger`
   "search_query": "mean temperature Athens 2020",
   "degraded": false,
   "model": "qwen3.8-flash-next",
-  "prompt_version": "v2"
+  "prompt_version": "v3"
 }
 ```
 

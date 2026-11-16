@@ -1,6 +1,6 @@
 # Labelled inputs for `make eval`.
 #
-# Labels follow the definitions in intent_disambiguation/prompts/intent_v2.yaml.
+# Labels follow the definitions in intent_disambiguation/prompts/intent_v3.yaml.
 # Do not copy the prompt's examples here. `note` marks labels that people may disagree
 # on. `context` takes the same fields as the API request.
 
@@ -111,6 +111,21 @@ question:
   - query: "temprature athens july 2021 max"
     note: "Keyword style with typos, but 'max' asks for a value"
   - query: "I need the average monthly rainfall in Crete for my thesis"
+  # Maths and text questions that the learning material or text collections answer
+  - query: "How do you find the volume of a solid with a triple integral in spherical coordinates?"
+    note: "Answered by the MathE pedagogic resources; out_of_scope under v2"
+  - query: "How do I compute the area between the parabola y = 4x - x^2 and the x-axis?"
+    note: "Answered by the MathE pedagogic resources; out_of_scope under v2"
+  - query: "Explain the difference between a permutation and a combination"
+  - query: "Solve the system 2x + 3y = 7 and x - y = 1"
+  - query: "How do you calculate the determinant of a 3x3 matrix?"
+  - query: "Show me a worked example of integration by substitution"
+  - query: "What is the definition of a continuous function?"
+  - query: "Como se calcula a matriz inversa de uma matriz 2x2?"
+  - query: "Explique o que é uma distribuição binomial"
+  - query: "Πώς λύνω μια γραμμική διαφορική εξίσωση πρώτης τάξης;"
+  - query: "Τι είναι η παράγωγος μιας συνάρτησης;"
+  - query: "What does the Encyclopédie say about liberté?"
 
 ambiguous:
   - query: "surface temperature increase"
@@ -164,3 +179,10 @@ out_of_scope:
   - query: "Recommend a good restaurant in Athens"
   - query: "How do I upload my own dataset?"
     note: "Mentions datasets but asks for help with the platform"
+  # Help outside the hosted subjects stays out of scope, even near maths
+  - query: "help me with my physics homework essay"
+    note: "Writing help, not a maths question"
+  - query: "what's a good calculator app"
+  - query: "Why does my Python script raise IndexError: list index out of range?"
+  - query: "Write a motivational speech for my maths students before their exam"
+  - query: "Can you recommend a good maths tutor in Lisbon?"

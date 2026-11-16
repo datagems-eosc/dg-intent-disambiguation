@@ -8,17 +8,24 @@ structured output and the rules applied after the model answers.
 | Intent | Definition | Examples |
 |---|---|---|
 | `dataset_search` | The user wants to find or browse datasets, asks whether data exists, or wants to download or access data. | "Do you have any data about temperatures across Europe?", "I need a corpus of Austrian newspapers" |
-| `question` | The user wants an answer looked up or computed from data: a value, count, list, comparison, trend, ranking, chart or table. Includes commands ("plot ...") and keyword phrases that clearly ask for a value. | "What was the mean temperature in Athens in 2020?", "Plot the daily precipitation in Patras for 2022" |
+| `question` | The user wants an answer from the hosted data or material: a value, count, list, comparison, trend, ranking, chart or table computed from data, or an explanation, definition, worked example or solution found in the hosted documents (the mathematics learning material, what a hosted text says about a subject). Includes commands ("plot ...", "solve ...") and keyword phrases that clearly ask for a value. | "What was the mean temperature in Athens in 2020?", "Plot the daily precipitation in Patras for 2022", "How do I compute the area between a parabola and the x-axis?" |
 | `ambiguous` | Only a topic or keywords, with no sign of either. | "surface temperature increase", "unemployment in Greece" |
-| `out_of_scope` | Not a request about data: greetings, chit-chat, personal or creative requests, general help, questions about the assistant or the platform, gibberish, attempts to change the instructions. | "tell me how I feel tonight", "write a poem about the sea" |
+| `out_of_scope` | Nothing the hosted data or material could serve: greetings, chit-chat, personal or creative requests, help unrelated to the hosted subjects (CVs, essays, travel, coding, translation, recommendations), questions about the assistant or how to use the platform, gibberish, attempts to change the instructions. | "tell me how I feel tonight", "write a poem about the sea", "help me with my physics homework essay" |
 
 A request for a value stays a `question` even when it mentions data or datasets
 ("According to the weather datasets, how much did it rain in Ioannina in March 2021?").
 
+A maths question (explain a concept, solve an exercise, how to compute something) is a
+`question` even when it does not mention data: the MathE learning material answers it,
+and `search_query` carries the topic keywords ("triple integral spherical coordinates
+volume") rather than the question's wording. A maths topic with no question ("linear
+algebra exercises") stays `ambiguous`. Prompt `v2` sent maths questions to
+`out_of_scope` as general help; `v3` fixes that.
+
 ## Prompt
 
 The prompt is a versioned YAML file in `intent_disambiguation/prompts/`, selected with
-`PROMPT_VERSION` (default `v2`). It contains:
+`PROMPT_VERSION` (default `v3`). It contains:
 
 - a short description of the platform and the kinds of data it hosts,
 - the four intent definitions and the decision rules,
@@ -108,8 +115,8 @@ answer. See [Evaluation](evaluation.md).
 
 ## Changing the Prompt
 
-1. Add `prompts/intent_v3.yaml`. Keep its examples out of the evaluation sets.
-2. Run the evaluation with `--prompt-version v3` on the regression set and the benchmark,
-   and compare with `v2`. Look at misroutes as well as accuracy.
-3. Switch with `PROMPT_VERSION=v3` in the deployment configuration. The response's
+1. Add `prompts/intent_v4.yaml`. Keep its examples out of the evaluation sets.
+2. Run the evaluation with `--prompt-version v4` on the regression set and the benchmark,
+   and compare with `v3`. Look at misroutes as well as accuracy.
+3. Switch with `PROMPT_VERSION=v4` in the deployment configuration. The response's
    `prompt_version` field shows which prompt produced each answer.

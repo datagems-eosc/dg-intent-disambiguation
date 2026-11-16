@@ -17,7 +17,7 @@ def test_returns_the_model_answer(client):
         "search_query": "temperature Athens 2020",
         "degraded": False,
         "model": "test-model",
-        "prompt_version": "v2",
+        "prompt_version": "v3",
     }
 
 

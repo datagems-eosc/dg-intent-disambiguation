@@ -5,7 +5,7 @@ run against the real model, so they need access to SCAYLE.
 
 | Set | Inputs | Purpose | Command |
 |---|---|---|---|
-| Regression set (`eval/queries.yaml`) | 134 | Written alongside the prompt; checks that known cases keep working | `make eval` |
+| Regression set (`eval/queries.yaml`) | 151 | Written alongside the prompt; checks that known cases keep working | `make eval` |
 | Benchmark (`eval/benchmark/benchmark.jsonl`) | 876 | Independent measurement: written and labelled by other model families, reviewed by hand | `make benchmark` |
 
 ## Metrics
@@ -58,11 +58,37 @@ keyword inputs, which is why misroutes matter more than accuracy.
 
 ### Results
 
-Measured on 2 November 2026 with `qwen3.8-flash-next`:
+Prompt `v3` (14 November 2026, `qwen3.8-flash-next`, thinking off) routes maths questions
+that the MathE learning material answers to `question`; `v2` marked them `out_of_scope`.
+Both prompts were run the same evening:
+
+| Prompt | Regression set | Strict accuracy | Misroutes | Contested | All 876 inputs correct | Degraded |
+|---|---|---|---|---|---|---|
+| **v3 (deployed)** | **100%** (151) | **95.7%** | **5** | **99.5%** | **846** | 0 |
+| v2 | 92.7% (151) | 96.0% | 3 | 97.0% | 843 | 0 |
+
+- On the regression set, v2 sends all 11 maths cases to `out_of_scope`; v3 answers them
+  as questions with topic keywords as the search query ("triple integral spherical
+  coordinates volume calculus") and keeps the 5 new negatives (homework essay,
+  calculator app, Python error, motivational speech, maths tutor) `out_of_scope`.
+- On the benchmark v3 fixes 11 inputs and breaks 8. Fixed: the learning-material inputs
+  v2 marked `out_of_scope` ("I need a step-by-step solution explanation for solving
+  systems of linear equations", "integration by parts", "I need video tutorials on linear
+  algebra"), and several licence and keyword inputs. Broken: mostly questions about a
+  dataset itself (an API endpoint, a licence, a file format, commercial use of ESCO),
+  plus a request to summarise a pasted Encyclopédie passage, which v3 reads as a
+  question.
+- Strict accuracy is 2 inputs lower and overall 3 inputs higher. Repeated runs of the
+  same prompt vary by about 3 inputs, so the strict difference is within noise; the two
+  extra misroutes are dataset-metadata questions (see Known Weak Spots).
+- v3 also names logistics (last-mile delivery) among the hosted domains. Without it the
+  narrower `out_of_scope` definition sent delivery-routing keywords out of scope.
+
+Earlier measurements, 2 November 2026:
 
 | Configuration | Strict accuracy | Misroutes | Contested | Degraded |
 |---|---|---|---|---|
-| **Prompt v2, thinking off (deployed)** | **96.5%** | **2** | 97.5% | 0 |
+| **Prompt v2, thinking off (deployed then)** | **96.5%** | **2** | 97.5% | 0 |
 | Prompt v1 (with `reason`), thinking off | 96.5% | 4 | 98.5% | 0 |
 | Prompt v1, thinking on | 96.9% | 0 | 96.4% | 31 |
 | Rules candidate (not kept), thinking off | 95.1% | 3 | 97.5% | 0 |
@@ -72,7 +98,7 @@ prompts so that both see the same load:
 
 | Prompt | Median | Mean | p95 |
 |---|---|---|---|
-| **v2 (deployed)** | **715 ms** | **756 ms** | **1142 ms** |
+| **v2** | **715 ms** | **756 ms** | **1142 ms** |
 | v1 (with `reason`) | 819 ms | 921 ms | 1569 ms |
 
 Under the same parallel load, thinking on was about 1.7 times slower at the median and
@@ -82,7 +108,7 @@ Prompt `v1` asked for a one-sentence `reason` before the label, so that the mode
 explain itself first. It did not pay for itself: `v2` drops it and keeps the accuracy,
 with fewer misroutes and a shorter tail.
 
-With the deployed configuration:
+With prompt v2 on 2 November:
 
 - Per intent, precision / recall: dataset_search 95.2 / 97.1, question 99.3 / 97.9,
   ambiguous 89.6 / 88.7, out_of_scope 97.8 / 98.9.
@@ -90,7 +116,7 @@ With the deployed configuration:
   (including prompt injection) and French, German, Greek and Greek-English are at 95 to
   100%. Greeklish is lowest at 85%, then Spanish, Italian and Portuguese at 90%, on 20
   inputs each.
-- The regression set scores 100% with no misroutes.
+- The regression set (134 inputs then) scores 100% with no misroutes.
 - The 2 misroutes: a REST API question about ESCO that the judges labelled
   dataset_search and the model answered out of scope, and a Polish request for the
   occurrences of a word that the model read as a dataset search.
@@ -102,11 +128,12 @@ kept.
 
 ### Known Weak Spots
 
-- **Learning material** ("I need video tutorials on linear algebra", "MATHE INTEGRATION
-  BY PARTS EXERCISES") is sometimes marked `out_of_scope`. Whether such requests should
-  go to dataset search or to the MathE recommendation endpoint is still to be decided.
-- **Questions about a dataset itself** (licence, API, citation) do not fit the four
-  intents cleanly; one of the two misroutes is of this kind.
+- **Learning material.** Since v3, maths questions and requests for explanations go to
+  `question`, and requests for resources ("find MathE teaching material on triple
+  integrals") to `dataset_search`. Whether resource requests should instead go to the
+  MathE recommendation endpoint is still to be decided.
+- **Questions about a dataset itself** (licence, API, file format, citation) do not fit
+  the four intents cleanly; 3 of the 5 v3 misroutes are of this kind.
 - **One-word follow-ups** after a question ("precipitation"), **terse value phrases**
   ("average July temperature Heraklion 2019") and **keywords naming a dataset**
   ("ERA5-Land soil moisture France 2005") are often answered `ambiguous`. These cost the

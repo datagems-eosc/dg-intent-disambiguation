@@ -3,7 +3,7 @@
   "info": {
     "title": "DataGEMS Intent Disambiguation",
     "description": "\nDecides whether text typed into the DataGEMS search box asks for **datasets**\n(cross-dataset discovery) or for an **answer** (in-dataset discovery), and returns a\nkeyword query for the discovery step.\n",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "paths": {
     "/api/v1/intent": {
@@ -276,7 +276,7 @@
             "degraded": false,
             "intent": "question",
             "model": "qwen3.8-flash-next",
-            "prompt_version": "v2",
+            "prompt_version": "v3",
             "search_query": "air temperature Athens 2020"
           }
         ]

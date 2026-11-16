@@ -26,7 +26,7 @@ and how the Gateway and the UI are expected to use it.
 ## How it works
 
 One call to an LLM on SCAYLE (`qwen3.8-flash-next` by default) with a versioned prompt
-([intent_disambiguation/prompts/intent_v2.yaml](intent_disambiguation/prompts/intent_v2.yaml))
+([intent_disambiguation/prompts/intent_v3.yaml](intent_disambiguation/prompts/intent_v3.yaml))
 and strict JSON-schema output. A label with confidence below `INTENT_MIN_CONFIDENCE`
 becomes `ambiguous`. If SCAYLE fails, the endpoint still answers `ambiguous` with
 `degraded: true`, so the home page keeps working and the user is asked to choose.
@@ -62,13 +62,16 @@ data request marked out of scope) and latency. It saves every answer to `eval/re
 `--thinking`, `--model`, `--prompt-version` and `--min-confidence` override the
 settings, and `--url ... --token ...` evaluates a deployed instance.
 
-Results on 30 Oct 2026 (134 inputs; English, Greek, French, German, Spanish; including
-follow-ups with context):
+Results on 14 Nov 2026 (151 inputs; English, Greek, Portuguese, French, German, Spanish;
+including follow-ups with context and maths questions):
 
 | Setting | Accuracy | Misroutes | Latency p50 / p95 |
 |---|---|---|---|
-| thinking off (default) | 100% | 0 | 1.1 s / 1.25 s |
-| thinking on | 100% | 0 | 1.6 s / 2.35 s |
+| prompt v3, thinking off (default) | 100% | 0 | 1.1 s / 1.2 s |
+| prompt v2, thinking off | 92.7% | 11 | 0.96 s / 1.3 s |
+
+v2 sends all 11 maths questions to `out_of_scope`. On 30 Oct, before the maths cases were
+added, v2 scored 100% on the 134 inputs with thinking off and on.
 
 The set was written alongside the prompt, so treat it as a regression check rather
 than an independent benchmark. Add real user inputs to it as they come in, especially
@@ -77,12 +80,13 @@ any that were routed wrongly.
 The independent measurement is the **benchmark** in [eval/benchmark/](eval/benchmark/):
 876 inputs written and labelled by other model families (DeepSeek and GLM), reviewed by
 hand, in 10 languages, with noise, follow-ups and contested cases. On it the deployed
-configuration scores 96.5% strict accuracy with 2 misroutes in 679 inputs. Run it with
+configuration (prompt v3) scores 95.7% strict accuracy with 5 misroutes in 679 inputs
+and 99.5% on the 197 contested ones. Run it with
 `make benchmark`. See the [benchmark README](eval/benchmark/README.md) for the method, the
 results and the error patterns.
 
-To change the prompt, add `prompts/intent_v2.yaml`, run
-`uv run --env-file .env python eval/run_eval.py --prompt-version v3`, compare it with v2,
+To change the prompt, add a new `prompts/intent_<version>.yaml`, run
+`uv run --env-file .env python eval/run_eval.py --prompt-version v4`, compare it with v3,
 and then set `PROMPT_VERSION`. Keep the prompt's examples out of the evaluation set.
 
 ## Configuration
@@ -101,7 +105,7 @@ All settings are environment variables; see [.env.example](.env.example).
 | `INTENT_ENABLE_THINKING` | `false` | Reasoning before answering; slower |
 | `INTENT_MAX_TOKENS` | `1024` | Includes reasoning tokens when thinking is on |
 | `INTENT_MIN_CONFIDENCE` | `0.6` | Lower confidence becomes `ambiguous` |
-| `PROMPT_VERSION` | `v2` | Selects `prompts/intent_<version>.yaml` |
+| `PROMPT_VERSION` | `v3` | Selects `prompts/intent_<version>.yaml` |
 | `ENABLE_AUTH` | `false` | Require a DataGEMS AAI bearer token |
 | `OIDC_ISSUER` | dev realm | Token issuer; keys come from its JWKS endpoint |
 | `OIDC_AUDIENCE` | `dg-intent-disambiguation` | Required `aud` value; empty skips the check |
@@ -127,7 +131,7 @@ Logs are structured (structlog). Each request carries the Gateway's
    `ghcr.io/datagems-eosc/dg-intent-disambiguation:vX.Y.Z`.
 3. Update the image tag in `dg-intent-disambiguation-deployment-dev` (then `-prod`) and
    run its deploy script.
-4. Run the **Deploy Docs (On-Demand)** workflow with the version, e.g. `0.2.0`. It
+4. Run the **Deploy Docs (On-Demand)** workflow with the version, e.g. `0.3.0`. It
    publishes the site to GitHub Pages with `mike` and points `latest` at it.
 
 ## Documentation

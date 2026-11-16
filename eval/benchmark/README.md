@@ -47,11 +47,35 @@ became contested and 14 were relabelled. The two judges agree with each other on
 the non-contested inputs. That sets a ceiling: the line between `ambiguous` and the other
 intents is fuzzy for keyword inputs, so watch **misroutes** more than accuracy.
 
-## Results (2 Nov 2026, qwen3.8-flash-next)
+## Results
+
+### Prompt v3 (14 Nov 2026, qwen3.8-flash-next, thinking off)
+
+v3 sends maths questions that the MathE learning material answers to `question` instead
+of `out_of_scope`. Both prompts were run the same evening:
+
+| Prompt | Regression set (151) | Strict accuracy | Misroutes | Contested | All 876 correct |
+|---|---|---|---|---|---|
+| **v3 (deployed)** | **100%** | **95.7%** | **5** | **99.5%** | **846** |
+| v2 | 92.7% | 96.0% | 3 | 97.0% | 843 |
+
+- Regression set: v2 sends all 11 maths cases to `out_of_scope`; v3 gets all 151 right.
+- Benchmark: v3 fixes 11 inputs (the learning-material inputs v2 marked out of scope,
+  "integration by parts", licence and keyword inputs) and breaks 8, mostly questions
+  about a dataset itself (API endpoint, licence, file format, commercial use) and a
+  request to summarise a pasted Encyclopédie passage. Strict accuracy is 2 inputs lower,
+  within the run-to-run spread of about 3 inputs; overall 3 inputs higher.
+- The 5 misroutes: two REST API questions (BioTIME, ESCO) answered out of scope, a
+  cement-data licence question answered as a question, and a Greeklish request for a
+  CEDEFOP table and a Polish request for word occurrences read as dataset searches.
+- Naming logistics (last-mile delivery) among the hosted domains was needed: without it
+  the narrower `out_of_scope` sent delivery-routing keywords out of scope.
+
+### Prompt v1 and v2 (2 Nov 2026, qwen3.8-flash-next)
 
 | Configuration | Strict accuracy | Misroutes | Contested | Degraded |
 |---|---|---|---|---|
-| **Prompt v2, thinking off (deployed)** | **96.5%** | **2** | 97.5% | 0 |
+| **Prompt v2, thinking off (deployed then)** | **96.5%** | **2** | 97.5% | 0 |
 | Prompt v1 (with `reason`), thinking off | 96.5% | 4 | 98.5% | 0 |
 | Prompt v1, thinking on | 96.9% | 0 | 96.4% | 31 |
 | Rules candidate (not kept), thinking off | 95.1% | 3 | 97.5% | 0 |
@@ -61,7 +85,7 @@ prompts so that both see the same load:
 
 | Prompt | Median | Mean | p95 |
 |---|---|---|---|
-| **v2 (deployed)** | **715 ms** | **756 ms** | **1142 ms** |
+| **v2** | **715 ms** | **756 ms** | **1142 ms** |
 | v1 (with `reason`) | 819 ms | 921 ms | 1569 ms |
 
 Under the same parallel load, thinking on was about 1.7 times slower at the median and
@@ -79,7 +103,7 @@ With v2 and thinking off:
   (including prompt injection) and French, German, Greek and Greek-English are at 95 to
   100%. Greeklish is lowest at 85%, then Spanish, Italian and Portuguese at 90%, on 20
   inputs each.
-- The regression set scores 100% with no misroutes.
+- The regression set (134 inputs then) scores 100% with no misroutes.
 - The 2 misroutes: a REST API question about ESCO that the judges labelled
   dataset_search and the model answered out of scope, and a Polish request for the
   occurrences of a word that the model read as a dataset search.
@@ -103,9 +127,9 @@ removing them: dataset-licence rules pulled platform-help questions into dataset
 and the learning-material and value-keyword rules pulled topic keywords away from
 ambiguous. It was not kept.
 
-The learning-material case is a product decision before it is a prompt change. Should
-"linear algebra videos" go to dataset search or to the MathE recommendation endpoint?
-Once that is decided, add one targeted rule and re-measure here.
+Prompt v3 settled the out-of-scope part of the learning-material case: maths questions go
+to `question`, resource requests to `dataset_search`. Whether "linear algebra videos"
+should go to the MathE recommendation endpoint instead is still a product decision.
 
 ## Fields
 

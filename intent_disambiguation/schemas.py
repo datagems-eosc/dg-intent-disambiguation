@@ -82,7 +82,7 @@ class IntentResponse(BaseModel):
                     "search_query": "air temperature Athens 2020",
                     "degraded": False,
                     "model": "qwen3.8-flash-next",
-                    "prompt_version": "v2",
+                    "prompt_version": "v3",
                 }
             ]
         }

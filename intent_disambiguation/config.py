@@ -52,7 +52,7 @@ class Settings:
             intent_enable_thinking=_env_bool("INTENT_ENABLE_THINKING", False),
             intent_max_tokens=int(_env("INTENT_MAX_TOKENS", "1024")),
             intent_min_confidence=float(_env("INTENT_MIN_CONFIDENCE", "0.6")),
-            prompt_version=_env("PROMPT_VERSION", "v2"),
+            prompt_version=_env("PROMPT_VERSION", "v3"),
             enable_auth=_env_bool("ENABLE_AUTH", False),
             oidc_issuer=_env("OIDC_ISSUER", "https://datagems-dev.scayle.es/oauth/realms/dev"),
             # Set to an empty string to skip the audience check

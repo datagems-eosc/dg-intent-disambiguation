@@ -15,17 +15,25 @@ pytestmark = pytest.mark.anyio
 
 
 def make_classifier(llm: FakeLLM, **kwargs) -> IntentClassifier:
-    return IntentClassifier(llm, "test-model", PromptTemplate.load("v2"), **kwargs)
+    return IntentClassifier(llm, "test-model", PromptTemplate.load("v3"), **kwargs)
 
 
-def test_prompt_renders_the_examples():
-    prompt = PromptTemplate.load("v2")
+@pytest.mark.parametrize("version", ["v2", "v3"])
+def test_prompt_renders_the_examples(version):
+    prompt = PromptTemplate.load(version)
 
-    assert prompt.version == "v2"
+    assert prompt.version == version
     assert "reason" not in RESPONSE_SCHEMA["properties"]
     assert "{examples}" not in prompt.system
     assert '- Input: "write a haiku about rain"' in prompt.system
     assert '"intent": "out_of_scope", "search_query": null' in prompt.system
+
+
+def test_v3_routes_maths_questions_to_question():
+    prompt = PromptTemplate.load("v3")
+
+    assert '- Input: "Explain what an eigenvalue is"' in prompt.system
+    assert "A maths question is a question, not out_of_scope" in prompt.system
 
 
 async def test_sends_strict_schema_and_thinking_flag():

@@ -74,7 +74,7 @@ Decides whether the text a user typed asks for datasets or for an answer.
   "search_query": "mean temperature Athens 2020",
   "degraded": false,
   "model": "qwen3.8-flash-next",
-  "prompt_version": "v2"
+  "prompt_version": "v3"
 }
 ```
 
@@ -104,7 +104,7 @@ curl -X POST "https://{host}/dg-intent-disambiguation/api/v1/intent" \
   "search_query": "air pollution Athens",
   "degraded": false,
   "model": "qwen3.8-flash-next",
-  "prompt_version": "v2"
+  "prompt_version": "v3"
 }
 ```
 
@@ -118,7 +118,7 @@ GET /
 ```
 
 ```json
-{"service": "dg-intent-disambiguation", "version": "0.2.0"}
+{"service": "dg-intent-disambiguation", "version": "0.3.0"}
 ```
 
 ### Readiness
@@ -145,7 +145,7 @@ Reports whether SCAYLE is reachable and the configured model is listed. Always r
 ```json
 {
   "status": "healthy",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "scayle": {"status": "healthy", "model": "qwen3.8-flash-next", "model_available": true}
 }
 ```
